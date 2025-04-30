@@ -47,8 +47,8 @@ void performScaling() {
 
 void performRotation() {
     float rad = angle * M_PI / 180.0;
-    float cosA = cos(rad);
-    float sinA = sin(rad);
+    float cosA = std::cos(rad);
+    float sinA = std::sin(rad);
     
     transformedPoints.clear();
     for (auto& p : originalPoints) {

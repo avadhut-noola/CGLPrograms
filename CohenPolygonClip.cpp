@@ -1,6 +1,7 @@
 #include <GL/glut.h>
 #include <iostream>
 #include <vector>
+#include <cmath>
 using namespace std;
 
 int xmin = 100, ymin = 100, xmax = 400, ymax = 300;

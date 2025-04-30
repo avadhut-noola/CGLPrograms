@@ -1,6 +1,7 @@
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <GL/glut.h>
+#define M_PI 3.14159265358979323846
 using namespace std;
 
 double x, y, len, angle;
@@ -24,8 +25,8 @@ void line(double x1, double y1, double x2, double y2) {
 
 void koch(double x, double y, double len, double angle, int it) {
     if (it == 0) {
-        double nx = x + len * cos(angle * M_PI / 180);
-        double ny = y + len * sin(angle * M_PI / 180);
+        double nx = x + len * std::cos(angle * M_PI / 180);
+        double ny = y + len * std::sin(angle * M_PI / 180);
         line(x, y, nx, ny);
         return;
     }
@@ -33,16 +34,16 @@ void koch(double x, double y, double len, double angle, int it) {
     len /= 3;
     koch(x, y, len, angle, it - 1);
     
-    x += len * cos(angle * M_PI / 180);
-    y += len * sin(angle * M_PI / 180);
+    x += len * std::cos(angle * M_PI / 180);
+    y += len * std::sin(angle * M_PI / 180);
     koch(x, y, len, angle + 60, it - 1);
     
-    x += len * cos((angle + 60) * M_PI / 180);
-    y += len * sin((angle + 60) * M_PI / 180);
+    x += len * std::cos((angle + 60) * M_PI / 180);
+    y += len * std::sin((angle + 60) * M_PI / 180);
     koch(x, y, len, angle - 60, it - 1);
     
-    x += len * cos((angle - 60) * M_PI / 180);
-    y += len * sin((angle - 60) * M_PI / 180);
+    x += len * std::cos((angle - 60) * M_PI / 180);
+    y += len * std::sin((angle - 60) * M_PI / 180);
     koch(x, y, len, angle, it - 1);
 }
 

@@ -3,7 +3,7 @@
 #include <cmath>
 using namespace std;
 
-int x1, y1, x2, y2;
+int x1, y_start, x2, y_end;  // Renamed y1 to y_start and y2 to y_end
 bool dashedLine = false; // Change to true for dashed line, false for solid
 
 void plot(int x, int y, int count) {
@@ -18,19 +18,19 @@ void plot(int x, int y, int count) {
 
 void bresenham_line() {
     int dx = abs(x2 - x1);
-    int dy = abs(y2 - y1);
+    int dy = abs(y_end - y_start);
     int sx = (x1 < x2) ? 1 : -1;
-    int sy = (y1 < y2) ? 1 : -1;
+    int sy = (y_start < y_end) ? 1 : -1;
     int err = dx - dy;
     int e2;
-    int x = x1, y = y1;
+    int x = x1, y = y_start;
     int count = 0;
     
     while (true) {
         plot(x, y, count);
         count++;
         
-        if (x == x2 && y == y2) break;
+        if (x == x2 && y == y_end) break;
         
         e2 = 2 * err;
         if (e2 > -dy) {
@@ -63,10 +63,10 @@ void init() {
 }
 
 int main(int argc, char **argv) {
-    cout << "Enter start point (x1 y1): ";
-    cin >> x1 >> y1;
-    cout << "Enter end point (x2 y2): ";
-    cin >> x2 >> y2;
+    cout << "Enter start point (x1 y_start): ";
+    cin >> x1 >> y_start;
+    cout << "Enter end point (x2 y_end): ";
+    cin >> x2 >> y_end;
     
     cout << "Enter 1 for dashed line, 0 for solid line: ";
     int choice;

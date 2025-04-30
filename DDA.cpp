@@ -3,29 +3,39 @@
 #include <cmath>
 using namespace std;
 
-float x1, y1, x2, y2;
+float x1, y_start, x2, y_end;  // Renamed y1 to y_start and y2 to y_end
+bool dashedLine = false;
 
-void plot(int x, int y) {
-    glBegin(GL_POINTS);
-    glVertex2i(x, y);
-    glEnd();
-    glFlush();
+void plot(float x, float y, int count) {
+    if (!dashedLine || (count % 10 < 5)) {
+        glBegin(GL_POINTS);
+        glVertex2f(x, y);
+        glEnd();
+        glFlush();
+    }
 }
 
 void DDA_line() {
     float dx = x2 - x1;
-    float dy = y2 - y1;
-    float steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+    float dy = y_end - y_start;
+    float steps;
     
-    float xInc = dx / steps;
-    float yInc = dy / steps;
+    if (abs(dx) > abs(dy))
+        steps = abs(dx);
+    else
+        steps = abs(dy);
     
-    float x = x1, y = y1;
+    float x_inc = dx / steps;
+    float y_inc = dy / steps;
+    
+    float x = x1, y = y_start;
+    int count = 0;
     
     for (int i = 0; i <= steps; i++) {
-        plot(round(x), round(y));
-        x += xInc;
-        y += yInc;
+        plot(x, y, count);
+        count++;
+        x += x_inc;
+        y += y_inc;
     }
 }
 
@@ -48,10 +58,15 @@ void init() {
 }
 
 int main(int argc, char **argv) {
-    cout << "Enter start point (x1 y1): ";
-    cin >> x1 >> y1;
-    cout << "Enter end point (x2 y2): ";
-    cin >> x2 >> y2;
+    cout << "Enter start point (x1 y_start): ";
+    cin >> x1 >> y_start;
+    cout << "Enter end point (x2 y_end): ";
+    cin >> x2 >> y_end;
+    
+    cout << "Enter 1 for dashed line, 0 for solid line: ";
+    int choice;
+    cin >> choice;
+    dashedLine = (choice == 1);
     
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);

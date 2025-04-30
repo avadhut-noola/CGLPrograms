@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 int radius, centerX = 0, centerY = 0;
@@ -8,9 +9,9 @@ void plotPoints(int x, int y) {
     // Plot points in all 8 octants
     glBegin(GL_POINTS);
     glVertex2i(centerX + x, centerY + y);
+    glVertex2i(centerX + x, centerY - y);
     glVertex2i(centerX + y, centerY + x);
     glVertex2i(centerX + y, centerY - x);
-    glVertex2i(centerX + x, centerY - y);
     glVertex2i(centerX - x, centerY - y);
     glVertex2i(centerX - y, centerY - x);
     glVertex2i(centerX - y, centerY + x);

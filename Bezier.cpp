@@ -1,9 +1,13 @@
+#include <GL/glut.h>
 #include <iostream>
 #include <vector>
-#include <GL/glut.h>
+#include <cmath>
 using namespace std;
 
-struct Point { double x, y; };
+struct Point {
+    float x, y;
+};
+
 vector<Point> ctrlPoints;
 int it, numCtrlPoints;
 
@@ -14,25 +18,26 @@ void init() {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-double factorial(int n) {
-    return (n <= 1) ? 1 : n * factorial(n - 1);
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
 }
 
-double binomial(int n, int k) {
+int binomial(int n, int k) {
     return factorial(n) / (factorial(k) * factorial(n - k));
 }
 
 Point bezierPoint(vector<Point>& points, double t) {
-    Point p = {0, 0};
     int n = points.size() - 1;
+    Point result = {0, 0};
     
     for (int i = 0; i <= n; i++) {
-        double blend = binomial(n, i) * pow(t, i) * pow(1 - t, n - i);
-        p.x += points[i].x * blend;
-        p.y += points[i].y * blend;
+        double blend = binomial(n, i) * std::pow(t, i) * std::pow(1 - t, n - i);
+        result.x += points[i].x * blend;
+        result.y += points[i].y * blend;
     }
     
-    return p;
+    return result;
 }
 
 void drawBezier(vector<Point>& points) {

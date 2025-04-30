@@ -1,10 +1,11 @@
 #include <GL/glut.h>
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 float x = 100, y = 100;  // Position of object
 float dx = 2, dy = 1;    // Speed of movement
-float size = 30;         // Size of object
+float obj_size = 30;     // Size of object (renamed from size to obj_size)
 int windowWidth = 640, windowHeight = 480;
 
 void init() {
@@ -18,8 +19,8 @@ void drawObject() {
     glColor3f(1, 0, 0);
     glBegin(GL_POLYGON);
     for (int i = 0; i < 360; i += 30) {
-        float rad = i * 3.14159 / 180;
-        glVertex2f(x + size * cos(rad), y + size * sin(rad));
+        float rad = i * M_PI / 180;
+        glVertex2f(x + obj_size * std::cos(rad), y + obj_size * std::sin(rad));
     }
     glEnd();
     glFlush();
@@ -34,8 +35,8 @@ void animate(int value) {
     y += dy;
     
     // Bounce off walls
-    if (x > windowWidth - size || x < size) dx = -dx;
-    if (y > windowHeight - size || y < size) dy = -dy;
+    if (x > windowWidth - obj_size || x < obj_size) dx = -dx;
+    if (y > windowHeight - obj_size || y < obj_size) dy = -dy;
     
     // Draw the object
     drawObject();
@@ -55,7 +56,7 @@ int main(int argc, char** argv) {
     cout << "Speed (dx dy): ";
     cin >> dx >> dy;
     cout << "Size: ";
-    cin >> size;
+    cin >> obj_size;
     
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
