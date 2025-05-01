@@ -1,142 +1,66 @@
+#include <math.h>
 #include <GL/glut.h>
-#include <iostream>
-#include <stack>
+#include<iostream>
 using namespace std;
-
-int winWidth = 640, winHeight = 480;
-float fillColor[3] = {0.0, 1.0, 0.0};   // Fill color (Green)
-float borderColor[3] = {0.0, 0.0, 0.0}; // Border color (Black)
-float bgColor[3] = {1.0, 1.0, 1.0};     // Background color (White)
-
-struct Point {
-    int x, y;
-    Point(int x = 0, int y = 0) : x(x), y(y) {}
-};
-
-// Sample polygon (triangle)
-Point poly[] = {{100, 100}, {300, 300}, {100, 300}};
-int polySize = 3;
-
-void drawPoly() {
-    glColor3fv(borderColor);
-    glBegin(GL_LINE_LOOP);
-    for (int i = 0; i < polySize; i++)
-        glVertex2i(poly[i].x, poly[i].y);
-    glEnd();
-    glFlush();
-}
-
-void getPixelColor(int x, int y, float* color) {
-    glReadPixels(x, winHeight - y, 1, 1, GL_RGB, GL_FLOAT, color);
-}
-
-void setPixelColor(int x, int y, float* color) {
-    glColor3fv(color);
-    glBegin(GL_POINTS);
-    glVertex2i(x, y);
-    glEnd();
-    glFlush();
-}
-
-bool compareColor(float* c1, float* c2) {
-    return (c1[0] == c2[0] && c1[1] == c2[1] && c1[2] == c2[2]);
-}
-
-void floodFill(int x, int y, float* oldColor) {
-    stack<Point> pixels;
-    pixels.push(Point(x, y));
-    
-    while (!pixels.empty()) {
-        Point p = pixels.top();
-        pixels.pop();
-        
-        float color[3];
-        getPixelColor(p.x, p.y, color);
-        
-        if (compareColor(color, oldColor)) {
-            setPixelColor(p.x, p.y, fillColor);
-            
-            pixels.push(Point(p.x + 1, p.y));
-            pixels.push(Point(p.x - 1, p.y));
-            pixels.push(Point(p.x, p.y + 1));
-            pixels.push(Point(p.x, p.y - 1));
-        }
-    }
-}
-
-void mouseClick(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        float color[3];
-        getPixelColor(x, y, color);
-        floodFill(x, y, color);
-    }
-}
-
-void keyboard(unsigned char key, int x, int y) {
-    if (key == 'f' || key == 'F') {
-        float color[3];
-        getPixelColor(winWidth/2, winHeight/2, color);
-        floodFill(winWidth/2, winHeight/2, color);
-    } else if (key == 27) { // ESC key
-        exit(0);
-    }
-}
-
-void menuFunc(int option) {
-    switch(option) {
-        case 1: // Fill with green
-            fillColor[0] = 0.0; fillColor[1] = 1.0; fillColor[2] = 0.0;
-            break;
-        case 2: // Fill with red
-            fillColor[0] = 1.0; fillColor[1] = 0.0; fillColor[2] = 0.0;
-            break;
-        case 3: // Fill with blue
-            fillColor[0] = 0.0; fillColor[1] = 0.0; fillColor[2] = 1.0;
-            break;
-        case 4: // Clear
-            glClear(GL_COLOR_BUFFER_BIT);
-            drawPoly();
-            break;
-        case 5: // Exit
-            exit(0);
-            break;
-    }
-}
-
-void display() {
-    glClearColor(bgColor[0], bgColor[1], bgColor[2], 0.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    drawPoly();
-    glFlush();
-}
-
 void init() {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0, winWidth, 0, winHeight);
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glPointSize(1.0);
+	glMatrixMode(GL_PROJECTION);
+	gluOrtho2D(0, 640, 0, 480);
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(winWidth, winHeight);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow("Flood Fill Algorithm");
-    
-    init();
-    glutDisplayFunc(display);
-    glutMouseFunc(mouseClick);
-    glutKeyboardFunc(keyboard);
-    
-    // Create menu
-    int menu = glutCreateMenu(menuFunc);
-    glutAddMenuEntry("Fill Green", 1);
-    glutAddMenuEntry("Fill Red", 2);
-    glutAddMenuEntry("Fill Blue", 3);
-    glutAddMenuEntry("Clear", 4);
-    glutAddMenuEntry("Exit", 5);
-    glutAttachMenu(GLUT_RIGHT_BUTTON);
-    
-    glutMainLoop();
-    return 0;
+
+
+void floodFill(int x, int y, float* newColor) {
+	float color[3];
+	 glReadPixels(x,y,1.0,1.0,GL_RGB,GL_FLOAT,color);
+	if(color[0] != newColor[0] || color[1] != newColor[1] || color[2]!= newColor[2])
+	{
+		glColor3f(newColor[0],newColor[1],newColor[2]);
+		glBegin(GL_POINTS);
+		glVertex2i(x,y);
+		glEnd();
+		glFlush();
+		floodFill(x+1, y,newColor);
+		floodFill(x, y+1,  newColor);
+		floodFill(x-1, y, newColor);
+		floodFill(x, y-1, newColor);
+	}
+	return;
+}
+
+void onMouseClick(int button, int state, int x, int y)
+{
+	float newColor[] = {0, 1, 0};
+	cout<<"x is :"<<x<<" y is : "<<y<<endl;
+	floodFill(320,230,newColor);
+}
+
+void draw_circle() {
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(0,1,0);
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(300,100);
+        glVertex2i(300,300);
+        glVertex2i(450,100);
+	glEnd();
+	glFlush();
+}
+
+void display(void) {
+		draw_circle();
+}
+
+int main(int argc, char** argv)
+{
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
+	glutInitWindowSize(640, 480);
+	glutInitWindowPosition(200,200);
+	glutCreateWindow("Open GL");
+	init();
+	glutDisplayFunc(display);
+	glutMouseFunc(onMouseClick);
+	glutMainLoop();
+	return 0;
 }
