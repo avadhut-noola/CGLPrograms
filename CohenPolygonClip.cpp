@@ -104,10 +104,9 @@ void clipPolygon() {
     
     if (!clippedPoints.empty()) {
         glColor3f(1, 0, 0);
-        glBegin(GL_LINES);
-        for (size_t i = 0; i < clippedPoints.size(); i += 2) {
+        glBegin(GL_LINE_LOOP);  // Use GL_LINE_LOOP for polygon closure
+        for (size_t i = 0; i < clippedPoints.size(); i++) {
             glVertex2i(clippedPoints[i].first, clippedPoints[i].second);
-            glVertex2i(clippedPoints[i+1].first, clippedPoints[i+1].second);
         }
         glEnd();
     }
